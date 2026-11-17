@@ -20,6 +20,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build artifacts and smoke-test on Linux
@@ -39,7 +43,7 @@ jobs:
         with:
           go-version: "1.27"
           check-latest: true
-          cache: false
+          cache: true
 
       # Without rpm the .rpm check degrades to a magic-number test, which is not
       # what the release promises: the package's file tree is what a dnf user
@@ -95,7 +99,7 @@ jobs:
         with:
           go-version: "1.27"
           check-latest: true
-          cache: false
+          cache: true
 
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
